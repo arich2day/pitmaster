@@ -238,6 +238,50 @@
   @media (prefers-color-scheme: dark){ .context-prompt{background:#3d2812;color:#ffe9c9;border-color:#000} }
   .controller-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:6px 14px;font-size:13px;line-height:1.5}
   .controller-map b{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--panel2);border:1.5px solid var(--line);border-radius:5px;padding:1px 6px;white-space:nowrap}
+  /* ---- Modern tucked-away UI: dock, drawer, wheels, heat dial ---- */
+  .wrap{padding-bottom:96px}
+  .stage-grid.single{grid-template-columns:1fr}
+  .stage-controls .tool-quick{display:none}
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:70;display:flex;gap:8px;justify-content:center;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(24,17,12,.96);border-top:3px solid #000}
+  .dock button{flex:1;max-width:150px;min-height:52px;border:2px solid #ffe9c9;background:#2b211a;color:#ffe9c9;border-radius:10px;font-weight:800;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;box-shadow:3px 3px 0 #000;cursor:pointer}
+  .dock button small{font-size:10px;opacity:.75;font-family:"JetBrains Mono",monospace}
+  .dock button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000}
+  .dock button.on{background:var(--flame);color:#fff}
+  .drawer{position:fixed;left:0;right:0;bottom:72px;z-index:60;max-height:62vh;display:none;flex-direction:column;background:var(--bg);border-top:3px solid #000;box-shadow:0 -8px 24px rgba(0,0,0,.45)}
+  .drawer.open{display:flex}
+  .drawer-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:2px solid var(--line);background:var(--panel)}
+  .drawer-tabs{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+  .drawer-tabs button{border:2px solid var(--ink);background:var(--panel2);color:var(--ink);border-radius:7px;padding:7px 12px;font-weight:800;box-shadow:2px 2px 0 var(--ink);cursor:pointer}
+  .drawer-tabs button.on{background:#ffe1b8;outline:3px solid var(--flame)}
+  .drawer-x{border:2px solid var(--ink);background:var(--panel2);border-radius:7px;width:38px;height:38px;font-weight:900;font-size:16px;cursor:pointer;flex:none}
+  .drawer-body{overflow-y:auto;padding:12px}
+  .drawer-body .bar{margin-bottom:0}
+  .drawer-body [data-panel]{display:none}
+  .drawer-body [data-panel].show{display:block}
+  .wheel-overlay{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:rgba(16,11,8,.72)}
+  .wheel-overlay.open{display:flex}
+  .wheel-box{position:relative;width:min(92vw,460px);height:min(92vw,460px)}
+  .wheel-box svg{width:100%;height:100%;display:block;filter:drop-shadow(0 8px 24px rgba(0,0,0,.5))}
+  .wheel-seg{cursor:pointer;stroke:#000;stroke-width:2}
+  .wheel-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:128px;height:128px;border-radius:50%;background:#241a12;color:#ffe9c9;border:3px solid #000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;pointer-events:none}
+  .wheel-center .wc-emoji{font-size:30px;line-height:1.1}
+  .wheel-center .wc-name{font-weight:800;font-size:13px}
+  .wheel-center .wc-sub{font-size:11px;opacity:.85;line-height:1.3}
+  .wheel-hint{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);color:#ffe9c9;background:rgba(20,14,10,.85);padding:8px 14px;border-radius:999px;font-size:12.5px;font-weight:700;border:1.5px solid rgba(255,233,201,.4);white-space:nowrap;max-width:94%;overflow:hidden;text-overflow:ellipsis}
+  .wheel-x{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:50%;border:2px solid #ffe9c9;background:#241a12;color:#ffe9c9;font-size:18px;font-weight:900;cursor:pointer}
+  .dial-overlay{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:rgba(16,11,8,.72)}
+  .dial-overlay.open{display:flex}
+  .dial-box{background:var(--panel);border:3px solid #000;border-radius:14px;box-shadow:6px 6px 0 #000;padding:18px;width:min(92vw,380px);text-align:center}
+  .dial-box h3{margin:0 0 6px}
+  .dial-box svg{width:100%;height:auto;touch-action:none;cursor:grab}
+  .dial-box svg:active{cursor:grabbing}
+  .dial-read{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:15px;margin:6px 0 2px}
+  .dial-note{font-size:12.5px;color:var(--muted);margin:4px 0 10px;line-height:1.45}
+  .dial-btns{display:flex;gap:8px;justify-content:center}
+  .dial-btns button{border:2px solid #000;border-radius:8px;font-weight:800;padding:10px 18px;box-shadow:3px 3px 0 #000;cursor:pointer}
+  .dial-btns .primary{background:var(--flame);color:#fff}
+  .dial-btns .ghost{background:var(--panel2);color:var(--ink)}
+  .dial-open{width:100%;margin-top:10px;border:2px solid var(--ink);border-radius:8px;background:#ffe1b8;color:var(--ink);font-weight:800;padding:10px;box-shadow:3px 3px 0 var(--ink);cursor:pointer}
   @media (prefers-reduced-motion: reduce){ .fire-banner{animation:none} *{transition:none!important} }
 </style>
 </head>
@@ -309,10 +353,10 @@
       <div class="stage-controls">
         <button class="primary" id="startBtn">▶ Start shift</button>
         <button class="ghost" id="pauseBtn" disabled>⏸ Pause</button>
-        <button id="coalBtn" disabled>🪨 Add charcoal</button>
-        <button id="fanBtn" disabled>🌀 Fan the coals</button>
-        <button id="lidBtn">Close lid</button>
-        <button class="water" id="sprayBtn" disabled>💦 Spray bottle (<span id="sprayCt">3</span>)</button>
+        <button class="tool-quick" id="coalBtn" disabled>🪨 Add charcoal</button>
+        <button class="tool-quick" id="fanBtn" disabled>🌀 Fan the coals</button>
+        <button class="tool-quick" id="lidBtn">Close lid</button>
+        <button class="water tool-quick" id="sprayBtn" disabled>💦 Spray bottle (<span id="sprayCt">3</span>)</button>
       </div>
       <div class="input-bar" aria-live="polite">
         <span class="pill" id="padStatus">🎮 No controller</span>
@@ -373,11 +417,12 @@
           <div class="kv"><span>Lid</span><b id="lidVal">Open</b></div>
           <div class="kv"><span>Flare-up risk</span><b id="flareVal">Low</b></div>
         </div>
-        <div class="vent-row" style="margin-top:8px">
+        <div class="vent-row" style="margin-top:8px;display:none">
           <label for="vent" style="font-size:13px;font-weight:700">Vent</label>
           <input type="range" id="vent" min="0" max="100" value="55" aria-label="Vent opening percent">
           <b id="ventVal" style="font-family:'JetBrains Mono',monospace;font-size:13px">55%</b>
         </div>
+        <button class="dial-open" id="dialOpenBtn" type="button">🌡 Heat dial — click in to set the vent</button>
         <p style="font-size:12px;color:var(--muted);margin:8px 0 0;line-height:1.45">Open vent + open lid pulls temp <b>down</b> fast. Closed lid traps heat and pushes it <b>up</b>. Rain and gusts will fight you either way.</p>
       </div>
 
@@ -447,7 +492,7 @@
         <div><b>LB / RB</b> Jump between grate slots</div>
         <div><b>LT / RT</b> Vent down / up</div>
         <div><b>Start / Options</b> Start · Pause · Resume</div>
-        <div><b>Keyboard</b> Enter or E interact, F flip, T toss, L lid, Space pause</div>
+        <div><b>Keyboard</b> Enter or E interact, F flip, T toss, L lid, Space pause · <b>Q (hold)</b> meat wheel, <b>Tab (hold)</b> tool wheel, <b>H</b> heat dial</div>
         <div><b>Touch</b> Left stick walks, drag looks, tap picks a slot, double-tap flips, flicks fire coal / lid / vent</div>
       </div>
       <ul>
@@ -456,7 +501,8 @@
         <li><b>The lid is real:</b> it starts open, swung back on its hinge behind the grill. Close it with the Lid button, the L key, or a flick down, and watch it swing shut over the meat and trap the heat. A at the grill, tapping the lid, or the Lid button swings it back open. Meat hides under a shut lid, just like the real thing, so mind the panel readouts while it cooks blind.</li>
         <li><b>Cook:</b> internal temp climbs with grill temp. Each meat has a target, the panel bar turns green in the sweet spot, red past it. Aim at a cooking meat to see its slot in the prompt.</li>
         <li><b>Flip:</b> flip once around halfway for an even-cook bonus. Never flipping costs points.</li>
-        <li><b>Temp control:</b> charcoal and fanning push temp up; opening the lid, closing the vent, rain and gusts pull it down.</li>
+        <li><b>Temp control:</b> click in with the heat dial (H, or the Heat button, or the temp gauge) and turn the needle like a lockpick — the green arc is the vent range holding 225–275°F right now, Set locks it in. Charcoal and fanning push temp up; opening the lid, closing the vent, rain and gusts pull it down.</li>
+        <li><b>Wheels:</b> hold Q for the meat wheel, hold Tab for the tools wheel. Move the mouse to pick a slice, let go to use it. The dock buttons at the bottom open the same wheels on touch. Everything else — grill, fuel, cooler, supply, pit readouts, mode — lives behind the Pit Menu button and slides up when you need it.</li>
         <li><b>Flare-ups:</b> hot grill + fatty meat = fire. Spray it (3 bottles a shift) or close the lid to smother it. Meat in a fire burns fast.</li>
         <li><b>Fuel is real:</b> charcoal grills eat coal from the bin, the offset eats wood splits, and both pellet smokers eat pellets from the hopper bin. Load with the Fuel &amp; Smoke panel (or the Coal button). At zero fuel the temp collapses and the cook <b>stalls</b> until you load more.</li>
         <li><b>Smoke wood:</b> hickory, mesquite, oak, apple, cherry and pecan each smoke different and burn at their own rate — mesquite fast and intense, oak slow and steady. On pellet smokers your pick is the pellet blend itself.</li>
@@ -469,6 +515,47 @@
   </section>
 
   <p class="foot">PitMaster in first person: a playable 3D pit simulator for the portfolio, Three.js in the browser, no installs, no backend.</p>
+</div>
+
+<div class="wheel-overlay" id="wheelOverlay" role="dialog" aria-modal="true" aria-label="Selection wheel">
+  <div class="wheel-box">
+    <svg id="wheelSvg" viewBox="0 0 400 400" aria-hidden="true"></svg>
+    <div class="wheel-center" id="wheelCenter"></div>
+  </div>
+  <div class="wheel-hint" id="wheelHint"></div>
+  <button class="wheel-x" id="wheelCancel" type="button" aria-label="Close wheel">✕</button>
+</div>
+<div class="dial-overlay" id="dialOverlay" role="dialog" aria-modal="true" aria-label="Heat dial">
+  <div class="dial-box">
+    <h3>Heat dial — turn to ride the vent</h3>
+    <svg id="dialSvg" viewBox="0 0 320 320"></svg>
+    <div class="dial-read" id="dialRead"></div>
+    <p class="dial-note" id="dialNote"></p>
+    <div class="dial-btns">
+      <button id="dialSet" class="primary" type="button">Set heat</button>
+      <button id="dialCancel" class="ghost" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-bar">
+    <div class="drawer-tabs" role="tablist">
+      <button data-panel="grill" type="button">Grill</button>
+      <button data-panel="fuel" type="button">Fuel</button>
+      <button data-panel="cooler" type="button">Cooler</button>
+      <button data-panel="supply" type="button">Supply</button>
+      <button data-panel="pit" type="button">Pit</button>
+      <button data-panel="mode" type="button">Mode</button>
+    </div>
+    <button class="drawer-x" id="drawerClose" type="button" aria-label="Close panel">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+<div class="dock" id="dock">
+  <button id="dockMeats" type="button">🥩<span>Meats</span><small>hold Q</small></button>
+  <button id="dockTools" type="button">🛠<span>Tools</span><small>hold Tab</small></button>
+  <button id="dockHeat" type="button">🌡<span>Heat</span><small>H</small></button>
+  <button id="dockMenu" type="button">☰<span>Pit Menu</span><small>panels</small></button>
 </div>
 
 <div class="overlay" id="overlay" role="dialog" aria-modal="true">
@@ -2072,6 +2159,7 @@ if(window.matchMedia&&window.matchMedia("(pointer:coarse)").matches) $("touchSta
 document.addEventListener("keydown",function(e){
  var tag=(e.target&&e.target.tagName)||"";
  if(tag==="INPUT"&&e.target.type!=="range") return;
+ if(UI.wheel||UI.dial) return; /* wheels and dial own the keys while open */
  var k=e.key.toLowerCase();
  if(["arrowup","arrowdown","arrowleft","arrowright","w","a","s","d"].indexOf(k)>=0){
   if(tag==="INPUT") return; /* let the vent slider keep its arrow keys */
@@ -2092,6 +2180,7 @@ var prevBtns=[], prevAxesBtn={lt:false,rt:false};
 window.addEventListener("gamepadconnected",function(e){ $("padStatus").textContent="🎮 "+(e.gamepad.id||"Controller").slice(0,26)+" connected"; $("padStatus").classList.add("on"); log("Controller connected: "+e.gamepad.id+". Left stick walks, right stick looks, A works the station you're at."); });
 window.addEventListener("gamepaddisconnected",function(){ $("padStatus").textContent="🎮 No controller"; $("padStatus").classList.remove("on"); });
 function pollGamepad(dt){
+ if(UI.wheel||UI.dial){ padVec.x=0; padVec.y=0; return; }
  var gps=navigator.getGamepads?navigator.getGamepads():[]; var gp=null;
  for(var i=0;i<gps.length;i++){ if(gps[i]){ gp=gps[i]; break; } }
  if(!gp){ padVec.x=0; padVec.y=0; return; }
@@ -2152,6 +2241,336 @@ function frame(ts){
  hudAcc+=dt; if(hudAcc>0.2){ hudAcc=0; syncHUD(); }
  ctxAcc+=dt; if(ctxAcc>0.15){ ctxAcc=0; var ct=contextText(); var cp=$("contextPrompt"); if(cp&&cp.textContent!==ct) cp.textContent=ct; if(player.moving) highlightCursor(); }
 }
+
+/* ---------------- Modern tucked-away UI: dock, drawer, GTA wheels, heat dial ---------------- */
+var UI={wheel:null, wheelSel:0, wheelItems:[], wheelTouched:false, dial:false, dialVent:55, drawer:false, panel:"grill", prevPaused:false};
+var dialOpenVent=55, dialDragging=false, wheelDown=false;
+
+/* ---- Drawer: the menu panels live here, one at a time ---- */
+function openDrawer(tab){
+  closeWheel(false); closeDial(false);
+  var d=$("drawer"); if(!d) return;
+  d.classList.add("open"); d.setAttribute("aria-hidden","false");
+  UI.drawer=true; showPanel(tab||UI.panel||"grill");
+  var m=$("dockMenu"); if(m) m.classList.add("on");
+}
+function closeDrawer(){
+  var d=$("drawer"); if(!d) return;
+  d.classList.remove("open"); d.setAttribute("aria-hidden","true");
+  UI.drawer=false; var m=$("dockMenu"); if(m) m.classList.remove("on");
+}
+function showPanel(name){
+  UI.panel=name;
+  document.querySelectorAll("#drawerBody [data-panel]").forEach(function(el){ el.classList.toggle("show",el.dataset.panel===name); });
+  document.querySelectorAll("#drawer .drawer-tabs button").forEach(function(b){ b.classList.toggle("on",b.dataset.panel===name); });
+}
+
+/* ---- GTA-style radial wheels ---- */
+function shortMeat(m){ var map={burger:"Burger",steak:"Ribeye",chicken:"Chicken",sausage:"Sausage",ribs:"Pork Ribs",brisket:"Brisket",salmon:"Salmon",porkchop:"Pork Chop",shrimp:"Shrimp",lamb:"Lamb",turkey:"Turkey Leg",corn:"Corn"}; return map[m.id]||m.name; }
+function wheelItemsFor(kind){
+  if(kind==="meats"){
+    return MEATS.map(function(m){
+      var stk=S.inv.meats[m.id]||0;
+      return {id:m.id, icon:m.emoji, name:shortMeat(m), sub:"Target "+m.target+"°F · Stock "+stk, off:stk<=0, offReason:"Out of stock — order more from Supply."};
+    });
+  }
+  var g=grillById(S.grillId);
+  return [
+    {id:"coal", icon:"🪨", name:"Coal", sub:g.fuelKind==="pellets"?"Load pellets":g.fuelKind==="wood"?"Load splits":"Add charcoal", off:$("coalBtn").disabled, offReason:"Start the shift first."},
+    {id:"fan", icon:"🌀", name:"Fan", sub:"Temp spike · flare risk up", off:$("fanBtn").disabled, offReason:"Start the shift first."},
+    {id:"lid", icon:"🔲", name:"Lid", sub:S.lidOpen?"Close it — trap the heat":"Open it — let heat out", off:false},
+    {id:"spray", icon:"💦", name:"Spray", sub:S.sprays+" bottle"+(S.sprays===1?"":"s")+" left", off:$("sprayBtn").disabled||S.sprays<=0, offReason:S.sprays<=0?"Spray bottles are empty this shift.":"Start the shift first."},
+    {id:"flip", icon:"🔄", name:"Flip", sub:"Flip the meat", off:false},
+    {id:"toss", icon:"🗑️", name:"Toss", sub:"Toss the meat", off:false}
+  ];
+}
+function renderWheel(){
+  var svg=$("wheelSvg"); var items=UI.wheelItems; var n=items.length;
+  var NS="http://www.w3.org/2000/svg";
+  svg.innerHTML="";
+  items.forEach(function(it,i){
+    var a0=(i*360/n-90)*Math.PI/180, a1=((i+1)*360/n-90)*Math.PI/180;
+    var R=185, r=64, cx=200, cy=200;
+    var x0=cx+R*Math.cos(a0), y0=cy+R*Math.sin(a0);
+    var x1=cx+R*Math.cos(a1), y1=cy+R*Math.sin(a1);
+    var x2=cx+r*Math.cos(a1), y2=cy+r*Math.sin(a1);
+    var x3=cx+r*Math.cos(a0), y3=cy+r*Math.sin(a0);
+    var p=document.createElementNS(NS,"path");
+    p.setAttribute("d","M"+x0.toFixed(1)+" "+y0.toFixed(1)+" A"+R+" "+R+" 0 0 1 "+x1.toFixed(1)+" "+y1.toFixed(1)+" L"+x2.toFixed(1)+" "+y2.toFixed(1)+" A"+r+" "+r+" 0 0 0 "+x3.toFixed(1)+" "+y3.toFixed(1)+" Z");
+    p.setAttribute("class","wheel-seg"+(i===UI.wheelSel?" sel":"")+(it.off?" off":""));
+    p.setAttribute("fill",i===UI.wheelSel?"#e4571d":(i%2?"#2e2318":"#3a2c20"));
+    p.dataset.i=i;
+    svg.appendChild(p);
+    var mid=(a0+a1)/2, lr=128;
+    var tx=cx+lr*Math.cos(mid), ty=cy+lr*Math.sin(mid);
+    var t=document.createElementNS(NS,"text");
+    t.setAttribute("x",tx.toFixed(1)); t.setAttribute("y",(ty-4).toFixed(1));
+    t.setAttribute("text-anchor","middle"); t.setAttribute("fill",it.off?"#9a8f80":"#ffe9c9");
+    t.setAttribute("font-size","24"); t.textContent=it.icon;
+    svg.appendChild(t);
+    var t2=document.createElementNS(NS,"text");
+    t2.setAttribute("x",tx.toFixed(1)); t2.setAttribute("y",(ty+14).toFixed(1));
+    t2.setAttribute("text-anchor","middle"); t2.setAttribute("fill",it.off?"#9a8f80":"#ffe9c9");
+    t2.setAttribute("font-size","11"); t2.setAttribute("font-weight","700");
+    t2.textContent=it.name;
+    svg.appendChild(t2);
+  });
+  var sel=items[UI.wheelSel];
+  $("wheelCenter").innerHTML='<div class="wc-emoji">'+sel.icon+'</div><div class="wc-name">'+sel.name+'</div><div class="wc-sub">'+sel.sub+(sel.off?" · Unavailable":"")+'</div>';
+}
+function openWheel(kind){
+  closeDial(false); closeDrawer();
+  UI.wheel=kind; UI.wheelItems=wheelItemsFor(kind); UI.wheelTouched=false;
+  var first=UI.wheelItems.findIndex(function(it){ return !it.off; });
+  UI.wheelSel=first<0?0:first;
+  UI.prevPaused=S.paused; S.paused=true;
+  if(document.pointerLockElement&&document.exitPointerLock) document.exitPointerLock();
+  renderWheel();
+  $("wheelOverlay").classList.add("open");
+  $("wheelHint").textContent=kind==="meats"?"Meats · move to pick · release to use":"Tools · move to pick · release to use";
+}
+function closeWheel(confirm){
+  if(!UI.wheel) return;
+  var kind=UI.wheel, item=UI.wheelItems[UI.wheelSel];
+  UI.wheel=null;
+  $("wheelOverlay").classList.remove("open");
+  if(S.paused) S.paused=UI.prevPaused;
+  if(confirm&&item){
+    if(item.off){ log(item.offReason||"Not available right now.",true); return; }
+    if(kind==="meats") pickMeatWheel(item.id);
+    else useToolWheel(item.id);
+  }
+}
+function pickMeatWheel(id){
+  var m=meatById(id);
+  S.selectedMeat=id; buildCooler();
+  log(m.name+" in hand — walk to the grill, aim at an open slot, press A. Or tap a slot below.");
+  beep(520,0.06,"square",0.04);
+}
+function useToolWheel(id){
+  if(id==="flip"){ var fi=activeSlot(); if(S.slotList[fi]){ if(!S.lidOpen) setLid(true); flipMeat(fi); } else log("Nothing on that slot to flip yet."); return; }
+  if(id==="toss"){ var ti=activeSlot(); if(S.slotList[ti]) tossMeat(ti); else { S.selectedMeat=null; buildCooler(); } return; }
+  if(id==="lid"){ setLid(!S.lidOpen); return; }
+  doAction(id); /* coal, fan, spray */
+}
+function wheelAngle(e){
+  var r=$("wheelSvg").getBoundingClientRect();
+  var cx=r.left+r.width/2, cy=r.top+r.height/2;
+  var dx=e.clientX-cx, dy=e.clientY-cy;
+  var dist=Math.sqrt(dx*dx+dy*dy);
+  if(dist<r.width*0.36||dist>r.width/2) return -1;
+  var ang=Math.atan2(dy,dx)*180/Math.PI+90;
+  if(ang<0) ang+=360;
+  return Math.floor(ang/(360/UI.wheelItems.length))%UI.wheelItems.length;
+}
+function wheelPointer(e){
+  if(!UI.wheel) return;
+  var i=wheelAngle(e);
+  if(i>=0&&i!==UI.wheelSel){ UI.wheelSel=i; UI.wheelTouched=true; renderWheel(); }
+}
+function wheelPointerDown(e){
+  if(!UI.wheel) return;
+  wheelDown=true; UI.wheelTouched=true; wheelPointer(e);
+}
+function wheelPointerUp(e){
+  if(!UI.wheel||!wheelDown) return;
+  wheelDown=false;
+  var r=$("wheelSvg").getBoundingClientRect();
+  var cx=r.left+r.width/2, cy=r.top+r.height/2;
+  var dist=Math.sqrt(Math.pow(e.clientX-cx,2)+Math.pow(e.clientY-cy,2));
+  if(dist<=r.width/2){ wheelPointer(e); closeWheel(true); }
+  else closeWheel(false);
+}
+function cycleWheel(dir){
+  var n=UI.wheelItems.length;
+  UI.wheelSel=(UI.wheelSel+dir+n)%n; renderWheel();
+}
+
+/* ---- Heat dial: click in, turn the needle like a lockpick ---- */
+function predictTemp(v){
+  var g=grillById(S.grillId);
+  var fuelHeat=(S.fuel/100)*330*g.heat;
+  var ventFactor=0.55+(v/100)*0.6;
+  var wxT=S.weather.temp*(g.wxResist||1);
+  var simHour=SIM.min/60;
+  var nightPull=(simHour<5.5||simHour>19.5)?-9:0;
+  var t=110+fuelHeat*ventFactor+wxT+nightPull+(S.lidOpen?-18:26)+(S.fanBoost>0?55:0)+(S.woodLoad>15?8:0);
+  if(g.fuelKind==="pellets"&&S.fuel>0){ var setPt=g.id==="pelletv"?228:242; t=t*0.62+setPt*0.38; }
+  if(S.fuel<=0){ t=92+wxT*0.4+nightPull; }
+  return t;
+}
+function sweetRange(){
+  var lo=null, hi=null;
+  for(var v=0;v<=100;v++){ var t=predictTemp(v); if(t>=225&&t<=275){ if(lo===null) lo=v; hi=v; } }
+  return lo===null?null:{lo:lo,hi:hi};
+}
+function dialAngle(v){ return -135+(v/100)*270; } /* degrees, 0 = up, + clockwise */
+function dialVentFromAngle(deg){
+  if(deg>135) return 100;
+  if(deg<-135) return 0;
+  return Math.round((deg+135)/270*100);
+}
+function renderDial(){
+  var svg=$("dialSvg"); var NS="http://www.w3.org/2000/svg";
+  svg.innerHTML="";
+  var cx=160, cy=160, R=118;
+  for(var v=0;v<=100;v+=10){
+    var a=dialAngle(v)*Math.PI/180;
+    var x1=cx+R*Math.sin(a), y1=cy-R*Math.cos(a);
+    var x2=cx+(R-12)*Math.sin(a), y2=cy-(R-12)*Math.cos(a);
+    var ln=document.createElementNS(NS,"line");
+    ln.setAttribute("x1",x1.toFixed(1)); ln.setAttribute("y1",y1.toFixed(1));
+    ln.setAttribute("x2",x2.toFixed(1)); ln.setAttribute("y2",y2.toFixed(1));
+    ln.setAttribute("stroke","#8a7a63"); ln.setAttribute("stroke-width",v%50===0?3:2);
+    svg.appendChild(ln);
+  }
+  var sw=sweetRange();
+  if(sw){
+    var a0=dialAngle(sw.lo)*Math.PI/180, a1=dialAngle(sw.hi)*Math.PI/180;
+    var sx0=cx+R*Math.sin(a0), sy0=cy-R*Math.cos(a0);
+    var sx1=cx+R*Math.sin(a1), sy1=cy-R*Math.cos(a1);
+    var large=(sw.hi-sw.lo)/100*270>180?1:0;
+    var arc=document.createElementNS(NS,"path");
+    arc.setAttribute("d","M"+sx0.toFixed(1)+" "+sy0.toFixed(1)+" A"+R+" "+R+" 0 "+large+" 1 "+sx1.toFixed(1)+" "+sy1.toFixed(1));
+    arc.setAttribute("stroke","#3d9b4f"); arc.setAttribute("stroke-width","9"); arc.setAttribute("fill","none"); arc.setAttribute("stroke-linecap","round");
+    svg.appendChild(arc);
+  }
+  var na=dialAngle(UI.dialVent)*Math.PI/180;
+  var nx=cx+96*Math.sin(na), ny=cy-96*Math.cos(na);
+  var nd=document.createElementNS(NS,"line");
+  nd.setAttribute("x1",cx); nd.setAttribute("y1",cy);
+  nd.setAttribute("x2",nx.toFixed(1)); nd.setAttribute("y2",ny.toFixed(1));
+  nd.setAttribute("stroke","#e4571d"); nd.setAttribute("stroke-width","6"); nd.setAttribute("stroke-linecap","round");
+  svg.appendChild(nd);
+  var knob=document.createElementNS(NS,"circle");
+  knob.setAttribute("cx",cx); knob.setAttribute("cy",cy); knob.setAttribute("r","16");
+  knob.setAttribute("fill","#241a12"); knob.setAttribute("stroke","#ffe9c9"); knob.setAttribute("stroke-width","2");
+  svg.appendChild(knob);
+  [["0",-135],["50",0],["100",135]].forEach(function(pair){
+    var la=pair[1]*Math.PI/180;
+    var t=document.createElementNS(NS,"text");
+    t.setAttribute("x",(cx+138*Math.sin(la)).toFixed(1)); t.setAttribute("y",(cy-138*Math.cos(la)+4).toFixed(1));
+    t.setAttribute("text-anchor","middle"); t.setAttribute("fill","#8a7a63"); t.setAttribute("font-size","12"); t.setAttribute("font-weight","700");
+    t.textContent=pair[0]; svg.appendChild(t);
+  });
+  var pred=Math.round(predictTemp(UI.dialVent));
+  $("dialRead").textContent="Vent "+UI.dialVent+"% · settles ≈"+pred+"°F · pit now "+Math.round(S.temp)+"°F";
+  $("dialNote").textContent=S.fuel<=0?"Out of fuel — the dial won't do much until you load the firebox.":(sw?"Green arc is the vent range holding 225–275°F right now. Drag the needle, watch the number, hit Set.":"No vent setting holds 225–275°F in these conditions — the pit is fighting the weather or running low on fuel.");
+}
+function openDial(){
+  if(UI.dial) return;
+  closeWheel(false); closeDrawer();
+  UI.dial=true; dialOpenVent=S.vent; UI.dialVent=S.vent;
+  UI.prevPaused=S.paused; S.paused=true;
+  if(document.pointerLockElement&&document.exitPointerLock) document.exitPointerLock();
+  renderDial();
+  $("dialOverlay").classList.add("open");
+}
+function closeDial(revert){
+  if(!UI.dial) return;
+  UI.dial=false;
+  $("dialOverlay").classList.remove("open");
+  if(revert) setVent(dialOpenVent);
+  if(S.paused) S.paused=UI.prevPaused;
+  syncHUD();
+}
+function dialStep(d){
+  setVent(UI.dialVent+d); UI.dialVent=S.vent; renderDial();
+}
+function dialPointerAngle(e){
+  var r=$("dialSvg").getBoundingClientRect();
+  var cx=r.left+r.width/2, cy=r.top+r.height/2;
+  return Math.atan2(e.clientX-cx,-(e.clientY-cy))*180/Math.PI;
+}
+function dialPointerDown(e){
+  if(!UI.dial) return;
+  dialDragging=true;
+  try{ $("dialSvg").setPointerCapture(e.pointerId); }catch(err){}
+  var v=dialVentFromAngle(dialPointerAngle(e));
+  setVent(v); UI.dialVent=S.vent; renderDial();
+}
+function dialPointerMove(e){
+  if(!UI.dial||!dialDragging) return;
+  var v=dialVentFromAngle(dialPointerAngle(e));
+  if(v!==UI.dialVent){ setVent(v); UI.dialVent=S.vent; renderDial(); }
+}
+function dialPointerUp(e){ dialDragging=false; }
+
+/* ---- Hotkeys for the wheels and dial ---- */
+document.addEventListener("keydown",function(e){
+  var tag=(e.target&&e.target.tagName)||"";
+  if(tag==="INPUT"&&e.target.type!=="range") return;
+  if(e.key==="Escape"){
+    if(UI.dial){ closeDial(true); return; }
+    if(UI.wheel){ closeWheel(false); return; }
+    if(UI.drawer){ closeDrawer(); return; }
+  }
+  if(UI.wheel){
+    if(e.key==="Tab"){ e.preventDefault(); return; }
+    if(e.key==="ArrowRight"||e.key==="ArrowDown"){ e.preventDefault(); UI.wheelTouched=true; cycleWheel(1); }
+    else if(e.key==="ArrowLeft"||e.key==="ArrowUp"){ e.preventDefault(); UI.wheelTouched=true; cycleWheel(-1); }
+    else if(e.key==="Enter"){ e.preventDefault(); closeWheel(true); }
+    return;
+  }
+  if(UI.dial){
+    if(e.key==="Tab"){ e.preventDefault(); return; }
+    if(e.key.toLowerCase()==="h"){ closeDial(false); return; }
+    if(e.key==="ArrowRight"||e.key==="ArrowUp"){ e.preventDefault(); dialStep(e.shiftKey?5:1); }
+    else if(e.key==="ArrowLeft"||e.key==="ArrowDown"){ e.preventDefault(); dialStep(e.shiftKey?-5:-1); }
+    else if(e.key==="Enter"){ e.preventDefault(); closeDial(false); }
+    return;
+  }
+  if(e.repeat) return;
+  var k=e.key.toLowerCase();
+  if(k==="q"){ e.preventDefault(); UI.wheelTouched=false; openWheel("meats"); }
+  else if(e.key==="Tab"){ e.preventDefault(); UI.wheelTouched=false; openWheel("tools"); }
+  else if(k==="h"){ openDial(); }
+});
+document.addEventListener("keyup",function(e){
+  if(!UI.wheel) return;
+  if(UI.wheel==="meats"&&e.key.toLowerCase()==="q") closeWheel(UI.wheelTouched);
+  else if(UI.wheel==="tools"&&e.key==="Tab") closeWheel(UI.wheelTouched);
+});
+
+/* ---- Wire the dock, drawer, wheels and dial ---- */
+function initModernUI(){
+  var body=$("drawerBody");
+  function movePanel(sel,name){ var el=document.querySelector(sel); if(!el) return; el.dataset.panel=name; body.appendChild(el); }
+  movePanel('section[aria-label="Choose your grill"]',"grill");
+  movePanel('section[aria-label="Fuel and smoke"]',"fuel");
+  movePanel('section[aria-label="The cooler"]',"cooler");
+  movePanel('section[aria-label="Supply orders"]',"supply");
+  movePanel('section[aria-label="Game mode"]',"mode");
+  var pit=document.createElement("div"); pit.dataset.panel="pit";
+  var dash=document.querySelector(".dash");
+  if(dash){ while(dash.firstChild){ pit.appendChild(dash.firstChild); } dash.style.display="none"; }
+  body.appendChild(pit);
+  var sg=document.querySelector(".stage-grid"); if(sg) sg.classList.add("single");
+  $("dockMeats").addEventListener("click",function(){ openWheel("meats"); });
+  $("dockTools").addEventListener("click",function(){ openWheel("tools"); });
+  $("dockHeat").addEventListener("click",function(){ openDial(); });
+  $("dockMenu").addEventListener("click",function(){ if(UI.drawer) closeDrawer(); else openDrawer(UI.panel); });
+  $("drawerClose").addEventListener("click",closeDrawer);
+  document.querySelectorAll("#drawer .drawer-tabs button").forEach(function(b){ b.addEventListener("click",function(){ showPanel(b.dataset.panel); }); });
+  $("dialOpenBtn").addEventListener("click",openDial);
+  var g=document.querySelector(".gauge");
+  if(g){ g.style.cursor="pointer"; g.title="Click in to open the heat dial"; g.addEventListener("click",openDial); }
+  $("startBtn").addEventListener("click",function(){ closeDrawer(); });
+  $("againBtn").addEventListener("click",function(){ closeDrawer(); });
+  $("wheelCancel").addEventListener("click",function(){ closeWheel(false); });
+  $("dialSet").addEventListener("click",function(){ closeDial(false); });
+  $("dialCancel").addEventListener("click",function(){ closeDial(true); });
+  $("wheelOverlay").addEventListener("pointermove",wheelPointer);
+  $("wheelOverlay").addEventListener("pointerdown",wheelPointerDown);
+  $("wheelOverlay").addEventListener("pointerup",wheelPointerUp);
+  $("wheelOverlay").addEventListener("wheel",function(e){ e.preventDefault(); if(!UI.wheel) return; UI.wheelTouched=true; cycleWheel(e.deltaY>0?1:-1); },{passive:false});
+  $("dialSvg").addEventListener("pointerdown",dialPointerDown);
+  $("dialSvg").addEventListener("pointermove",dialPointerMove);
+  $("dialSvg").addEventListener("pointerup",dialPointerUp);
+  $("dialSvg").addEventListener("pointercancel",dialPointerUp);
+  openDrawer("grill");
+}
+initModernUI();
 
 /* ---------------- Init ---------------- */
 resetSlots();
