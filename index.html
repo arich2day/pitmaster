@@ -1985,9 +1985,10 @@ function buildSpatula(){
  /* The whole tool is built flat in the group's XY plane, facing the camera,
     with the parts overlapping so it reads as one spatula. Angling the parts
     in 3D kept separating them on screen (blade forward, handle down), so
-    nothing here is rotated out of the plane. The group sits far enough out
-    (z -0.85) that the full tool fits in the lower-right of the view. */
- var grp=new THREE.Group(); grp.position.set(0.3,-0.1,-0.85); grp.rotation.set(0.05,-0.1,0.08); grp.scale.set(1.05,1.05,1.05); cam.add(grp);
+    nothing here is rotated out of the plane. The group is small and high
+    enough that the whole tool, grip end included, fits in the lower-right
+    of the view with margin on either side of the frame. */
+ var grp=new THREE.Group(); grp.position.set(0.28,-0.02,-0.9); grp.rotation.set(0.05,-0.1,0.08); grp.scale.set(0.8,0.8,0.8); cam.add(grp);
  var woodM=std(0x9c6b3f,0.8,0), steelM=std(0xb9c2c9,0.28,0.9);
  /* wooden handle, tapered, angled down-right in the plane, overlapping the neck */
  var handle=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.024,0.24,12), woodM);
