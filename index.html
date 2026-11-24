@@ -759,6 +759,8 @@ function buildCooler(){
   });
   c.appendChild(b);
  });
+ /* the Grate tab's Place labels read the current pick, so refresh them too */
+ buildSlots();
 }
 function qualityOf(slot){
  var m=slot.meat; var diff=Math.abs(slot.temp-m.target);
@@ -1980,7 +1982,10 @@ function updateMeatVisuals(force){
 }
 function buildSpatula(){
  var cam=P3.camera;
- var grp=new THREE.Group(); grp.position.set(0.32,-0.28,-0.62); grp.rotation.set(0.3,-0.22,0.45); cam.add(grp);
+ /* The tool sits farther from the camera now (z -0.9, scaled up to keep its
+    screen size). At the old depth the viewport was smaller than the tool,
+    so the handle hung below the frame no matter how it was angled. */
+ var grp=new THREE.Group(); grp.position.set(0.3,-0.2,-0.9); grp.rotation.set(0.3,-0.22,0.45); grp.scale.set(1.25,1.25,1.25); cam.add(grp);
  var woodM=std(0x9c6b3f,0.8,0), steelM=std(0xb9c2c9,0.28,0.9);
  /* turned wooden handle, tapered, with a dark grip at the end. The group
     is angled so the handle runs down into the bottom corner of the view,
