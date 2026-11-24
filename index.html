@@ -123,6 +123,15 @@
   .ticket.urgent .t-fill{background:var(--bad)}
   .ticket .t-time{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;margin-top:4px}
   .empty-note{color:var(--muted);font-size:13px;padding:6px 0}
+  /* order tickets as a HUD stack over the 3D view, not a whole section */
+  .stage-shell .orders{position:absolute;top:10px;right:10px;z-index:5;display:flex;flex-direction:column;gap:6px;max-width:210px;pointer-events:none}
+  .stage-shell .orders .ticket{padding:6px 9px;font-size:12px;box-shadow:2px 2px 0 rgba(36,26,18,.85)}
+  .stage-shell .orders .ticket::before{height:5px}
+  .stage-shell .orders .ticket .t-meat{font-size:13px;margin-top:2px}
+  .stage-shell .orders .ticket .t-want{font-size:11px}
+  .stage-shell .orders .ticket .t-bar{height:5px;margin-top:4px}
+  .stage-shell .orders .ticket .t-time{font-size:10px;margin-top:3px}
+  .stage-shell .orders .empty-note{background:rgba(255,251,232,.92);border:2px solid #241a12;border-radius:4px;padding:6px 9px;color:#241a12}
   /* Cooler + slots */
   .cooler{display:flex;flex-wrap:wrap;gap:8px}
   .meat-btn{border:2px solid var(--ink);background:var(--panel2);color:var(--ink);border-radius:8px;padding:8px 10px;text-align:left;box-shadow:3px 3px 0 var(--ink);min-width:118px}
@@ -497,7 +506,7 @@
       </div>
       <ul>
         <li><b>You are the pitmaster:</b> first person, standing in the yard. The cooler is on your left, the grill dead ahead, the pass on your right. Walk up to a station and the prompt at the bottom of the scene tells you what the action button does there.</li>
-        <li><b>Load:</b> at the cooler, press A to grab the meat it is showing (X cycles it), walk to the grill, aim your crosshair at an open slot, and press A to put it on. Tapping meats and slots in the panels below still works too.</li>
+        <li><b>Load:</b> at the cooler, press A to grab the meat it is showing (X cycles it), walk to the grill, aim your crosshair at an open slot, and press A to put it on. The cooler and grate panels in Pit Menu still work too.</li>
         <li><b>The lid is real:</b> it starts open, swung back on its hinge behind the grill. Close it with the Lid button, the L key, or a flick down, and watch it swing shut over the meat and trap the heat. A at the grill, tapping the lid, or the Lid button swings it back open. Meat hides under a shut lid, just like the real thing, so mind the panel readouts while it cooks blind.</li>
         <li><b>Cook:</b> internal temp climbs with grill temp. Each meat has a target, the panel bar turns green in the sweet spot, red past it. Aim at a cooking meat to see its slot in the prompt.</li>
         <li><b>Flip:</b> flip once around halfway for an even-cook bonus. Never flipping costs points.</li>
@@ -543,6 +552,7 @@
       <button data-panel="grill" type="button">Grill</button>
       <button data-panel="fuel" type="button">Fuel</button>
       <button data-panel="cooler" type="button">Cooler</button>
+      <button data-panel="grate" type="button">Grate</button>
       <button data-panel="supply" type="button">Supply</button>
       <button data-panel="pit" type="button">Pit</button>
       <button data-panel="mode" type="button">Mode</button>
@@ -745,7 +755,7 @@ function buildCooler(){
   b.addEventListener("click",function(){
    S.selectedMeat = (S.selectedMeat===m.id? null : m.id);
    buildCooler();
-   if(S.selectedMeat) log(m.name+" in hand — walk to the grill, aim at an open slot, press A. Or tap a slot below.");
+   if(S.selectedMeat) log(m.name+" in hand — walk to the grill, aim at an open slot, press A.");
   });
   c.appendChild(b);
  });
@@ -1309,7 +1319,7 @@ function contextText(){
   var i=activeSlot(), s=S.slotList[i];
   if(s) return "🔥 GRILL · Slot "+(i+1)+(hoverSlot>=0?" (crosshair)":"")+" — "+s.meat.name+" at "+Math.round(s.temp)+"°F, "+Math.round(s.progress)+"% · A: serve · X: flip · B: toss";
   if(S.selectedMeat) return "🔥 GRILL · Slot "+(i+1)+" is open — A: put the "+meatById(S.selectedMeat).name+" on · Aim at a slot to pick it";
-  return "🔥 GRILL — lid's open, that slot is empty. Grab a meat at the cooler (walk left), or tap one below.";
+  return "🔥 GRILL — lid's open, that slot is empty. Grab a meat at the cooler (walk left), or open the cooler in Pit Menu.";
  }
  return "🚶 First person — walk with WASD, the left stick, or the touch stick. Cooler is left, grill is ahead, the pass is right. Aim the crosshair at a grate slot to work it.";
 }
@@ -1340,7 +1350,7 @@ function doInteract(){
   var i=activeSlot(); cursorSlot=i;
   if(!S.slotList[i]){
    if(S.selectedMeat) placeMeat(i);
-   else log("Pick a meat first — walk left to the cooler and press A, or tap one in the cooler below.",true);
+   else log("Pick a meat first — walk left to the cooler and press A, or open the cooler in Pit Menu.",true);
   } else serveMeat(i);
   return;
  }
@@ -1527,7 +1537,7 @@ function buildYard(){
  box(1.24,0.07,0.66, std(0xb9c8d2,0.5,0.1), 0,0.65,0, cg);
  var clid=box(1.24,0.06,0.66, std(0x2f6fb2,0.45,0.1), 0,0.86,-0.3, cg); clid.rotation.x=-0.85;
  box(1.05,0.1,0.5, std(0xbfe3f5,0.25,0), 0,0.62,0.02, cg); /* ice bed */
- P3.coolerTop=box(0.3,0.09,0.22, std(0xb0402f,0.6,0), 0,0.74,0.02, cg); /* meat of the moment, on the ice */
+ P3.coolerTop=new THREE.Group(); P3.coolerTop.position.set(0,0.7,0.02); cg.add(P3.coolerTop); P3.coolerTopId=null; /* meat of the moment, on the ice */
  box(0.5,0.05,0.05, std(0x37474f,0.4,0.6), 0,0.45,0.34, cg);
  cyl(0.07,0.07,0.05, std(0x263238,0.6,0.3), -0.45,0.07,0.2, cg, 10).rotation.x=Math.PI/2;
  cyl(0.07,0.07,0.05, std(0x263238,0.6,0.3), 0.45,0.07,0.2, cg, 10).rotation.x=Math.PI/2;
@@ -1761,17 +1771,32 @@ function buildGrill3D(){
   var pot=new THREE.Mesh(new THREE.CircleGeometry(0.15,16), new THREE.MeshStandardMaterial({color:0x1c1c1c, roughness:1, emissive:0xff5a00, emissiveIntensity:0.25}));
   pot.rotation.x=-Math.PI/2; pot.position.y=0.34; g.add(pot); P3.emberMat=pot.material;
  } else if(id!=="flattop"){
-  var bed=new THREE.Mesh(new THREE.CircleGeometry(0.52,24), new THREE.MeshStandardMaterial({color:0x1c1c1c, roughness:1, emissive:0xff5a00, emissiveIntensity:0.25}));
-  bed.rotation.x=-Math.PI/2; bed.position.y=grateY-0.09; if(id==="offset"||id==="pelleth") bed.scale.x=1.5; g.add(bed); P3.emberMat=bed.material;
+  var bed=new THREE.Mesh(new THREE.CircleGeometry(0.52,24), std(0x141210,1,0));
+  bed.rotation.x=-Math.PI/2; bed.position.y=grateY-0.09; if(id==="offset"||id==="pelleth") bed.scale.x=1.5; g.add(bed);
+  /* glowing coal lumps piled on the bed, one shared material so the
+     fire pulse in animate3D still drives them all at once */
+  var coalM=new THREE.MeshStandardMaterial({color:0x1c1c1c, roughness:1, emissive:0xff5a00, emissiveIntensity:0.25});
+  var coalX=id==="offset"||id==="pelleth"?1.5:1;
+  for(var ci=0;ci<14;ci++){
+   var ca=(ci/14)*Math.PI*2+ci*0.7, cr=0.12+((ci*37)%10)/10*0.3;
+   var lump=new THREE.Mesh(new THREE.DodecahedronGeometry(0.04+((ci*53)%10)/10*0.02,0), coalM);
+   lump.position.set(Math.cos(ca)*cr*coalX, grateY-0.075, Math.sin(ca)*cr*0.8);
+   lump.rotation.set(ci*1.3,ci*0.7,ci*0.4); lump.castShadow=true;
+   g.add(lump);
+  }
+  P3.emberMat=coalM;
  } else { P3.emberMat=null; }
  if(id!=="flattop" && id!=="pelletv"){
-  var grate=new THREE.Mesh(new THREE.CircleGeometry(0.56,26), std(0x3a4046,0.35,0.8));
-  if(id==="offset"||id==="barrel") grate.scale.set(id==="offset"?1.25:0.8,1,1);
-  grate.rotation.x=-Math.PI/2; grate.position.y=grateY; grate.receiveShadow=true; g.add(grate);
-  for(var ring=0;ring<3;ring++){
-   var tor=new THREE.Mesh(new THREE.TorusGeometry(0.18+ring*0.17,0.008,6,30), steel);
-   tor.rotation.x=Math.PI/2; tor.position.y=grateY+0.004; if(id==="offset") tor.scale.x=1.5; g.add(tor);
+  /* real grate bars: steel rods spanning the fire, not a flat disc */
+  var grateG=new THREE.Group(); grateG.position.y=grateY; g.add(grateG);
+  var grateR=0.56, xScale=id==="offset"||id==="pelleth"?1.5:(id==="barrel"?0.8:1);
+  for(var bx=-0.45;bx<=0.451;bx+=0.09){
+   var half=Math.sqrt(Math.max(0.02,grateR*grateR-bx*bx));
+   var bar=new THREE.Mesh(new THREE.CylinderGeometry(0.009,0.009,half*2,8), steel);
+   bar.rotation.x=Math.PI/2; bar.position.set(bx,0,0); bar.castShadow=true; bar.receiveShadow=true;
+   grateG.add(bar);
   }
+  grateG.scale.x=xScale;
  }
  P3.slotAnchors=anchors;
  var hitMat=new THREE.MeshBasicMaterial({transparent:true, opacity:0, depthWrite:false});
@@ -1791,16 +1816,110 @@ function buildGrill3D(){
  }
  syncMeats3D();
 }
+/* Every meat is built from several shaped parts so it reads as the meat
+   it is, not a block. All body parts share one material (mat), which
+   updateMeatVisuals tints raw -> cooked -> charred; bones, fat, buns and
+   husks keep fixed colors. */
 function meatMeshFor(slot){
  var md=MEAT3D[slot.meat.id]||MEAT3D.burger;
  var grp=new THREE.Group();
  var mat=std(md.raw,0.55,0);
- var base=new THREE.Mesh(new THREE.BoxGeometry(md.w,md.h,md.d), mat);
- base.position.y=md.h/2; base.castShadow=true; base.receiveShadow=true; grp.add(base);
- var sear=new THREE.Mesh(new THREE.BoxGeometry(md.w*0.92,0.016,md.d*0.4), std(0x3a1c08,0.7,0));
- sear.position.y=md.h+0.006; sear.visible=false; grp.add(sear);
+ var boneM=std(0xf5efe0,0.6,0), fatM=std(0xf2e3c2,0.7,0), bunM=std(0xd9a05b,0.75,0),
+     cheeseM=std(0xf2c531,0.6,0), barkM=std(0x2e1a0e,0.9,0), huskM=std(0x4c7d3a,0.9,0),
+     woodM=std(0x8a6844,0.9,0), paleM=std(0xf08a5d,0.6,0), whiteM=std(0xfff2e0,0.7,0);
+ function part(geo,m,x,y,z,ry){
+  var ms=new THREE.Mesh(geo,m); ms.position.set(x||0,y||0,z||0);
+  if(ry) ms.rotation.y=ry;
+  ms.castShadow=true; ms.receiveShadow=true; grp.add(ms); return ms;
+ }
+ function disc(r,h,m,x,y,z){ return part(new THREE.CylinderGeometry(r,r,h,22),m,x,y,z); }
+ function slab(w,h,d,m,x,y,z,ry){ return part(new THREE.BoxGeometry(w,h,d),m,x,y,z,ry); }
+ function blob(r,m,x,y,z,sx,sy,sz){ var ms=part(new THREE.SphereGeometry(r,18,12),m,x,y,z); ms.scale.set(sx||1,sy||1,sz||1); return ms; }
+ function stick(r,len,m,x,y,z,rx,ry,rz){
+  var ms=part(new THREE.CylinderGeometry(r,r,len,10),m,x,y,z);
+  if(rx) ms.rotation.x=rx; if(ry) ms.rotation.y=ry; if(rz) ms.rotation.z=rz; return ms;
+ }
+ var searY=md.h+0.006, id=slot.meat.id;
+ if(id==="burger"){
+  blob(0.16,bunM,0,0.035,0,1,0.45,1); /* bottom bun */
+  disc(0.145,0.045,mat,0,0.075,0); /* patty */
+  slab(0.3,0.012,0.3,cheeseM,0,0.102,0,Math.PI/4); /* cheese, corners out */
+  blob(0.16,bunM,0,0.135,0,1,0.5,1); /* top bun */
+  searY=0.1;
+ } else if(id==="steak"){
+  var st=disc(0.19,0.06,mat,0,0.03,0); st.scale.set(1.15,1,0.85);
+  var fat=new THREE.Mesh(new THREE.TorusGeometry(0.19,0.022,8,22,Math.PI),fatM);
+  fat.rotation.x=Math.PI/2; fat.position.y=0.032; fat.castShadow=true; grp.add(fat);
+  searY=0.066;
+ } else if(id==="chicken"){
+  blob(0.15,mat,0,0.05,0,1.15,0.55,0.95); /* thigh */
+  stick(0.018,0.16,boneM,0.17,0.05,0,0,0,Math.PI/2); /* drumstick bone */
+  blob(0.027,boneM,0.25,0.05,0,1,1,1); /* knuckle */
+  searY=0.1;
+ } else if(id==="sausage"){
+  [ [-0.07,0.12],[0.07,-0.12] ].forEach(function(p){
+   var link=part(new THREE.CapsuleGeometry(0.05,0.22,4,10),mat,0,0.05,p[0]);
+   link.rotation.z=Math.PI/2; link.rotation.y=p[1];
+  });
+  searY=0.105;
+ } else if(id==="ribs"){
+  slab(0.36,0.07,0.24,mat,0,0.035,0); /* rack */
+  slab(0.37,0.015,0.25,barkM,0,0.075,0); /* bark */
+  for(var rb=-0.14;rb<=0.141;rb+=0.07) stick(0.014,0.2,boneM,rb,0.085,0,Math.PI/2,0,0); /* bones across the top */
+  searY=0.088;
+ } else if(id==="brisket"){
+  slab(0.36,0.09,0.24,mat,0,0.045,0);
+  slab(0.37,0.02,0.25,barkM,0,0.095,0); /* bark crust */
+  slab(0.36,0.02,0.05,fatM,0,0.05,0.1); /* fat stripe down one edge */
+  searY=0.108;
+ } else if(id==="salmon"){
+  slab(0.32,0.05,0.2,mat,0,0.025,0); /* fillet */
+  slab(0.3,0.015,0.18,paleM,0,0.05,0); /* lighter top flesh */
+  [-0.05,0,0.05].forEach(function(z){ slab(0.3,0.004,0.012,whiteM,0,0.06,z); }); /* fat lines */
+  searY=0.062;
+ } else if(id==="porkchop"){
+  var pc=disc(0.15,0.05,mat,0,0.025,0); pc.scale.set(1.2,1,0.9);
+  disc(0.035,0.02,boneM,0.14,0.03,0.08); /* bone eye */
+  stick(0.012,0.1,boneM,0.2,0.04,0.1,0,0,Math.PI/2.4); /* bone tip */
+  searY=0.056;
+ } else if(id==="shrimp"){
+  stick(0.012,0.34,woodM,0,0.05,0,0,0,Math.PI/2); /* skewer */
+  [-0.1,0,0.1].forEach(function(x){
+   var sh=new THREE.Mesh(new THREE.TorusGeometry(0.045,0.02,8,12,Math.PI*1.4),mat);
+   sh.position.set(x,0.05,0); sh.rotation.z=Math.PI*0.8; sh.castShadow=true; grp.add(sh);
+  });
+  searY=0.1;
+ } else if(id==="lamb"){
+  [[-0.09,-0.05,0.4],[0.09,0.05,-0.4]].forEach(function(c){
+   disc(0.09,0.05,mat,c[0],0.025,c[1]);
+   stick(0.012,0.12,boneM,c[0]+0.1,0.04,c[1]+0.03,0,c[2],Math.PI/2.2);
+  });
+  searY=0.056;
+ } else if(id==="turkey"){
+  blob(0.14,mat,0,0.1,0,0.9,1.1,0.9); /* drumstick */
+  stick(0.02,0.18,boneM,0.05,0.26,0,0,0,-0.5); /* bone */
+  blob(0.028,boneM,0.1,0.34,0,1,1,1); /* knuckle */
+  searY=0.19;
+ } else if(id==="corn"){
+  stick(0.05,0.3,mat,0,0.05,0,0,0,Math.PI/2); /* cob */
+  slab(0.16,0.01,0.08,huskM,-0.18,0.05,0.04,0.5); /* peeled husk leaves */
+  slab(0.16,0.01,0.08,huskM,-0.18,0.05,-0.04,-0.5);
+  searY=0.105;
+ } else {
+  var base=new THREE.Mesh(new THREE.BoxGeometry(md.w,md.h,md.d), mat);
+  base.position.y=md.h/2; base.castShadow=true; base.receiveShadow=true; grp.add(base);
+ }
+ var sear=new THREE.Mesh(new THREE.CylinderGeometry(Math.min(md.w,md.d)*0.45,Math.min(md.w,md.d)*0.45,0.016,18), std(0x3a1c08,0.7,0));
+ sear.position.y=searY; sear.visible=false; grp.add(sear);
  grp.userData={mat:mat, sear:sear, md:md, meatId:slot.meat.id};
  return grp;
+}
+/* a small version of a meat, for the spatula in hand and the cooler display */
+function miniMeatMesh(meatId){
+ var m=meatMeshFor({meat:meatById(meatId)});
+ m.userData.sear.visible=false;
+ m.scale.set(0.62,0.62,0.62);
+ return m;
 }
 function syncMeats3D(){
  if(!P3||!P3.grillGroup) return;
@@ -1841,12 +1960,38 @@ function updateMeatVisuals(force){
 function buildSpatula(){
  var cam=P3.camera;
  var grp=new THREE.Group(); grp.position.set(0.36,-0.36,-0.62); grp.rotation.set(0.15,-0.22,0.08); cam.add(grp);
- var handle=box(0.035,0.30,0.035, std(0x6d4c2f,0.8,0), 0,-0.1,0.05, grp);
- handle.rotation.x=0.5;
- var neck=box(0.03,0.16,0.015, std(0x9aa4ac,0.3,0.85), 0,0.05,-0.03, grp); neck.rotation.x=0.5;
- var head=box(0.15,0.015,0.17, std(0xb9c2c9,0.28,0.9), 0,0.13,-0.09, grp);
- P3.handMeat=box(0.13,0.05,0.13, std(0xb0402f,0.6,0), 0,0.165,-0.09, grp);
- P3.handMeat.visible=false;
+ var woodM=std(0x6d4c2f,0.8,0), steelM=std(0xb9c2c9,0.28,0.9);
+ /* turned wooden handle, tapered, with a dark grip at the end */
+ var handle=new THREE.Mesh(new THREE.CylinderGeometry(0.016,0.021,0.34,12), woodM);
+ handle.position.set(0,-0.12,0.05); handle.rotation.x=0.5; handle.castShadow=true; grp.add(handle);
+ var grip=new THREE.Mesh(new THREE.CylinderGeometry(0.023,0.023,0.1,12), std(0x3a2c20,0.85,0));
+ grip.position.set(0,-0.24,0.11); grip.rotation.x=0.5; grip.castShadow=true; grp.add(grip);
+ /* steel neck */
+ var neck=box(0.025,0.12,0.012, steelM, 0,0.03,-0.03, grp); neck.rotation.x=0.5;
+ /* slotted turner blade: extruded rounded shape with three slots, so it
+    reads as a spatula at a glance instead of a grey box */
+ var shape=new THREE.Shape();
+ var bw=0.085, bl=0.19;
+ shape.moveTo(-bw,-bl/2);
+ shape.lineTo(bw,-bl/2);
+ shape.lineTo(bw,bl/2-0.03);
+ shape.quadraticCurveTo(bw,bl/2,bw-0.03,bl/2);
+ shape.lineTo(-bw+0.03,bl/2);
+ shape.quadraticCurveTo(-bw,bl/2,-bw,bl/2-0.03);
+ shape.lineTo(-bw,-bl/2);
+ [-0.045,0,0.045].forEach(function(sx){
+  var hole=new THREE.Path();
+  hole.moveTo(sx-0.008,-0.02); hole.lineTo(sx+0.008,-0.02);
+  hole.lineTo(sx+0.008,0.06); hole.lineTo(sx-0.008,0.06);
+  hole.lineTo(sx-0.008,-0.02);
+  shape.holes.push(hole);
+ });
+ var bladeGeo=new THREE.ExtrudeGeometry(shape,{depth:0.008,bevelEnabled:true,bevelThickness:0.002,bevelSize:0.002,bevelSegments:1});
+ var blade=new THREE.Mesh(bladeGeo, steelM);
+ blade.rotation.x=-Math.PI/2+0.35; blade.position.set(0,0.1,-0.1); blade.castShadow=true; grp.add(blade);
+ /* the meat you are carrying sits on the blade, shaped like itself */
+ P3.handMeat=new THREE.Group(); P3.handMeat.position.set(0,0.13,-0.13); grp.add(P3.handMeat);
+ P3.handMeat.visible=false; P3.handMeatId=null;
  P3.spatula=grp;
 }
 /* ---------------- Quality: real render settings, no fake upscaling ---------------- */
@@ -1998,8 +2143,12 @@ function animate3D(dt){
  }
  /* cooler display meat follows the cooler's pick */
  if(P3.coolerTop){
-  var cm=MEAT3D[MEATS[coolerIdx].id];
-  if(cm && P3.coolerTop.material.color.getHex()!==cm.raw) P3.coolerTop.material.color.setHex(cm.raw);
+  var cId=MEATS[coolerIdx].id;
+  if(P3.coolerTopId!==cId){
+   while(P3.coolerTop.children.length) P3.coolerTop.remove(P3.coolerTop.children[0]);
+   P3.coolerTop.add(miniMeatMesh(cId));
+   P3.coolerTopId=cId;
+  }
  }
  /* hand: spatula sway + the meat you're carrying sits on it */
  if(P3.spatula){
@@ -2007,8 +2156,12 @@ function animate3D(dt){
   P3.spatula.position.y=-0.36+sway;
   P3.spatula.rotation.z=0.08+(player.moving&&!REDUCED? Math.sin(player.bob*0.5)*0.02:0);
   var holding=!!S.selectedMeat;
+  if(holding && P3.handMeatId!==S.selectedMeat){
+   while(P3.handMeat.children.length) P3.handMeat.remove(P3.handMeat.children[0]);
+   P3.handMeat.add(miniMeatMesh(S.selectedMeat));
+   P3.handMeatId=S.selectedMeat;
+  }
   if(P3.handMeat.visible!==holding) P3.handMeat.visible=holding;
-  if(holding){ var hm=MEAT3D[S.selectedMeat]; if(hm) P3.handMeat.material.color.setHex(hm.raw); }
  }
  /* tree sways in gusts */
  if(P3.treeTop && S.weather.id==="gust") P3.treeTop.rotation.z=Math.sin(t*2.2)*0.02;
@@ -2344,7 +2497,7 @@ function closeWheel(confirm){
 function pickMeatWheel(id){
   var m=meatById(id);
   S.selectedMeat=id; buildCooler();
-  log(m.name+" in hand — walk to the grill, aim at an open slot, press A. Or tap a slot below.");
+  log(m.name+" in hand — walk to the grill, aim at an open slot, press A.");
   beep(520,0.06,"square",0.04);
 }
 function useToolWheel(id){
@@ -2539,12 +2692,24 @@ function initModernUI(){
   movePanel('section[aria-label="Choose your grill"]',"grill");
   movePanel('section[aria-label="Fuel and smoke"]',"fuel");
   movePanel('section[aria-label="The cooler"]',"cooler");
+  movePanel('section[aria-label="Grill slots"]',"grate");
   movePanel('section[aria-label="Supply orders"]',"supply");
   movePanel('section[aria-label="Game mode"]',"mode");
   var pit=document.createElement("div"); pit.dataset.panel="pit";
   var dash=document.querySelector(".dash");
   if(dash){ while(dash.firstChild){ pit.appendChild(dash.firstChild); } dash.style.display="none"; }
   body.appendChild(pit);
+  /* tickets live on the 3D view now, a small HUD stack, not a whole section */
+  var ordersEl=$("orders");
+  if(ordersEl){
+   var shell=$("stageShell");
+   if(shell) shell.appendChild(ordersEl);
+   var ordSection=document.querySelector('section[aria-label="Order tickets"]');
+   if(ordSection) ordSection.remove();
+  }
+  /* render quality lives in the Pit panel now */
+  var sr=document.querySelector(".scale-row");
+  if(sr) pit.appendChild(sr);
   var sg=document.querySelector(".stage-grid"); if(sg) sg.classList.add("single");
   $("dockMeats").addEventListener("click",function(){ openWheel("meats"); });
   $("dockTools").addEventListener("click",function(){ openWheel("tools"); });
