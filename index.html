@@ -1987,7 +1987,7 @@ function buildSpatula(){
     in 3D kept separating them on screen (blade forward, handle down), so
     nothing here is rotated out of the plane. The group sits far enough out
     (z -0.85) that the full tool fits in the lower-right of the view. */
- var grp=new THREE.Group(); grp.position.set(0.3,-0.15,-0.85); grp.rotation.set(0.05,-0.1,0.08); grp.scale.set(1.15,1.15,1.15); cam.add(grp);
+ var grp=new THREE.Group(); grp.position.set(0.3,-0.1,-0.85); grp.rotation.set(0.05,-0.1,0.08); grp.scale.set(1.05,1.05,1.05); cam.add(grp);
  var woodM=std(0x9c6b3f,0.8,0), steelM=std(0xb9c2c9,0.28,0.9);
  /* wooden handle, tapered, angled down-right in the plane, overlapping the neck */
  var handle=new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.024,0.24,12), woodM);
@@ -2017,8 +2017,9 @@ function buildSpatula(){
  var bladeGeo=new THREE.ExtrudeGeometry(shape,{depth:0.008,bevelEnabled:true,bevelThickness:0.002,bevelSize:0.002,bevelSegments:1});
  var blade=new THREE.Mesh(bladeGeo, steelM);
  blade.position.set(0,0.12,0); blade.castShadow=true; grp.add(blade);
- /* the meat you are carrying sits on the face of the blade, shaped like itself */
- P3.handMeat=new THREE.Group(); P3.handMeat.position.set(0,0.12,0.04); P3.handMeat.rotation.x=-Math.PI/2; grp.add(P3.handMeat);
+ /* the meat you are carrying sits on the face of the blade, shaped like itself.
+    Scaled down so the blade still shows around the meat instead of the meat hiding it. */
+ P3.handMeat=new THREE.Group(); P3.handMeat.position.set(0,0.12,0.04); P3.handMeat.rotation.x=-Math.PI/2; P3.handMeat.scale.setScalar(0.75); grp.add(P3.handMeat);
  P3.handMeat.visible=false; P3.handMeatId=null;
  P3.spatula=grp;
 }
