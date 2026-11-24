@@ -808,6 +808,27 @@ function buildSlots(){
  });
  if(window.__pit3d) window.__pit3d.syncMeats();
 }
+/* Live slot values update in place every frame. buildSlots() destroys and
+   rebuilds the whole panel, so calling it from tick() while meat cooks
+   made the Place/Flip/Serve buttons die under the pointer (the button you
+   pressed was replaced mid-click). Only structural changes rebuild. */
+function updateSlotsLive(){
+ var wrap=$("slots"); if(!wrap) return;
+ if(wrap.children.length!==S.slotList.length){ buildSlots(); return; }
+ S.slotList.forEach(function(slot,i){
+  var card=wrap.children[i]; if(!card||!slot) return;
+  var st=stateLabel(slot);
+  var head=card.querySelector(".s-head span:last-child");
+  if(head) head.textContent=slot.meat.emoji+" "+Math.round(slot.temp)+"°F";
+  var tmp=card.querySelector(".s-temp");
+  if(tmp) tmp.textContent="Target "+slot.meat.target+"°F · Cook "+Math.round(slot.progress)+"%"+(slot.flipped?" · Flipped ✓":" · Not flipped")+" · "+((slot.simMin||0)/60).toFixed(1)+" sim hrs on the pit"+(S.stalled?" · ⛽ STALLED":"");
+  var fill=card.querySelector(".s-fill");
+  if(fill) fill.style.width=Math.min(100,slot.progress)+"%";
+  var state=card.querySelector(".s-state");
+  if(state){ state.textContent=st.t; state.className="s-state "+st.c; }
+  card.classList.toggle("burning", S.fire>40);
+ });
+}
 function buildOrders(){
  var wrap=$("orders");
  if(!S.orders.length){ wrap.innerHTML='<p class="empty-note">'+(S.running?"Line's quiet… next hungry customer any second.":"No tickets yet. Start a shift and the line shows up hungry.")+'</p>'; return; }
@@ -1122,7 +1143,7 @@ function tick(dt){
    n.score+=n.rate*dt*(0.75+Math.random()*0.6);
   });
  }
- if(dirty) buildSlots();
+ if(dirty) updateSlotsLive();
  if(orderDirty) buildOrders();
  buildLB();
 }
@@ -1959,15 +1980,17 @@ function updateMeatVisuals(force){
 }
 function buildSpatula(){
  var cam=P3.camera;
- var grp=new THREE.Group(); grp.position.set(0.36,-0.36,-0.62); grp.rotation.set(0.15,-0.22,0.08); cam.add(grp);
- var woodM=std(0x6d4c2f,0.8,0), steelM=std(0xb9c2c9,0.28,0.9);
- /* turned wooden handle, tapered, with a dark grip at the end */
- var handle=new THREE.Mesh(new THREE.CylinderGeometry(0.016,0.021,0.34,12), woodM);
- handle.position.set(0,-0.12,0.05); handle.rotation.x=0.5; handle.castShadow=true; grp.add(handle);
- var grip=new THREE.Mesh(new THREE.CylinderGeometry(0.023,0.023,0.1,12), std(0x3a2c20,0.85,0));
- grip.position.set(0,-0.24,0.11); grip.rotation.x=0.5; grip.castShadow=true; grp.add(grip);
- /* steel neck */
- var neck=box(0.025,0.12,0.012, steelM, 0,0.03,-0.03, grp); neck.rotation.x=0.5;
+ var grp=new THREE.Group(); grp.position.set(0.32,-0.28,-0.62); grp.rotation.set(0.3,-0.22,0.45); cam.add(grp);
+ var woodM=std(0x9c6b3f,0.8,0), steelM=std(0xb9c2c9,0.28,0.9);
+ /* turned wooden handle, tapered, with a dark grip at the end. The group
+    is angled so the handle runs down into the bottom corner of the view,
+    with a good length of wood visible, instead of straight down off frame. */
+ var handle=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.023,0.26,12), woodM);
+ handle.position.set(0,-0.09,0.04); handle.rotation.x=0.5; handle.castShadow=true; grp.add(handle);
+ var grip=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,0.08,12), std(0x3a2c20,0.85,0));
+ grip.position.set(0,-0.19,0.09); grip.rotation.x=0.5; grip.castShadow=true; grp.add(grip);
+ /* steel neck, a shade darker than the blade so it reads as its own piece */
+ var neck=box(0.025,0.12,0.012, std(0x8a949c,0.3,0.85), 0,0.04,-0.03, grp); neck.rotation.x=0.5;
  /* slotted turner blade: extruded rounded shape with three slots, so it
     reads as a spatula at a glance instead of a grey box */
  var shape=new THREE.Shape();
